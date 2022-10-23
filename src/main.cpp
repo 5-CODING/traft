@@ -2,11 +2,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 // implemented libraries
 #include "token.hpp"
-
-using vecTok = std::vector<trf::token>;
+#include "lexer.hpp"
 
 int main() {
     /*
@@ -14,13 +14,24 @@ int main() {
         For more info, check out 'docs/DOCS.md'.
     */
    
-    vecTok tokens = {
-        trf::token{trf::ID, "print", 0, 0},
-        trf::token{trf::LEFT_PAREN, "(", 0, 1},
-        trf::token{trf::LEFT_PAREN, ")", 0, 2}
-    };
+    trf::lexer lexr;
+    std::string input;
 
-    for (auto i: tokens) {
-        i.debugPrint();
+    while (true) {
+        std::cout << ">>> ";
+        std::getline(std::cin, input);
+
+        if (input == ":exit") break;
+
+        try {
+            auto vec = lexr.get_tokens(input);
+
+            for (auto i : vec) {
+                i.debugPrint();
+            }
+        }
+        catch (const std::exception& e) {
+            std::cerr << e.what() << '\n';
+        }
     }
 }
